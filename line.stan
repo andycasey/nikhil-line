@@ -2,18 +2,22 @@
 data {
     int<lower=1> N;
     vector[N] x;
-    vector[N] x_err;
     vector[N] y;
-    vector[N] y_err;
+    vector<lower=0>[N] x_err;
+    vector<lower=0>[N] y_err;
 }
 
 parameters {
-    real a;
-    real b;
+    real m;
+    real c;
     vector[N] x_t; // true x values
+    real<lower=0> x_err_int;
+    real<lower=0> y_err_int;
 }
 
 model {
-    x_t ~ normal(x, x_err);
-    y ~ normal(a + b*x_t, y_err);
+    x_err ~ normal(0, x_err_int);
+    y_err ~ normal(0, y_err_int);
+    x ~ normal(x_t, x_err);
+    y ~ normal(c + m*x_t, y_err);
 }
